@@ -80,7 +80,7 @@ class CheckingAccountService {
         }
     }
 
-    async findByName(name: string) {
+    async getByName(name: string) {
         try {
             const checkingAccount = await prisma.checkingAccount.findMany({
                 where: {

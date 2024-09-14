@@ -1,38 +1,42 @@
 import { Router } from "express";
 import { CheckingAccountController } from "./controllers/CheckingAccountController";
 import { StatmentController } from "./controllers/StatementController";
+import { AuthController } from "./controllers/AuthController";
+
 
 const routes = Router();
 
 const checkingAccountController = new CheckingAccountController();
 
 const statementController = new StatmentController();
-
+const authController = new AuthController;
 const path = "/checkingaccounts";
 
-routes.get(path, checkingAccountController.findAll);
+routes.get(path, authController.authMiddleware, checkingAccountController.getAll);
 
-routes.get(`${path}/:id`, checkingAccountController.findById);
+routes.get(`${path}/searchByName`), authController.authMiddleware, checkingAccountController.getByName;
 
-routes.post(path, checkingAccountController.create);
+routes.get(`${path}/:id`, authController.authMiddleware, checkingAccountController.getById);
 
-routes.put(`${path}/:id`, checkingAccountController.verifyExists, checkingAccountController.update);
+routes.post(path, authController.authMiddleware, checkingAccountController.create);
 
-routes.delete(`${path}/:id`, checkingAccountController.verifyExists, checkingAccountController.delete);
+routes.put(`${path}/:id`, authController.authMiddleware, checkingAccountController.verifyIfExists, checkingAccountController.update);
 
-routes.post(`${path}/id/deposit`, checkingAccountController.verifyExists, statementController.deposit);
+routes.delete(`${path}/:id`, authController.authMiddleware, checkingAccountController.verifyIfExists, checkingAccountController.delete);
 
-routes.get(`${path}/:id/statement`, checkingAccountController.verifyExists, statementController.getStatment);
+routes.post(`${path}/id/deposit`, authController.authMiddleware, checkingAccountController.verifyIfExists, statementController.deposit);
 
-routes.get(`${path}/:id/balance`, checkingAccountController.verifyExists, statementController.getBalance);
+routes.get(`${path}/:id/statement`, authController.authMiddleware, checkingAccountController.verifyIfExists, statementController.getStatment);
 
-routes.post(`${path}/:id/withdraw`, checkingAccountController.verifyExists, statementController.withdraw);
+routes.get(`${path}/:id/balance`, authController.authMiddleware, checkingAccountController.verifyIfExists, statementController.getBalance);
 
-routes.get(`${path}/:id/statement/period`, checkingAccountController.verifyExists, statementController.getByPrtiod)
+routes.post(`${path}/:id/withdraw`, authController.authMiddleware, checkingAccountController.verifyIfExists, statementController.withdraw);
 
-routes.post(`${path}/:id/pix`, checkingAccountController.verifyExists, statementController.pix);
+routes.get(`${path}/:id/statement/period`, authController.authMiddleware, checkingAccountController.verifyIfExists, statementController.getByPrtiod)
 
-routes.post(`${path}/:id/ted`, checkingAccountController.verifyExists, statementController.ted);
+routes.post(`${path}/:id/pix`, authController.authMiddleware, checkingAccountController.verifyIfExists, statementController.pix);
+
+routes.post(`${path}/:id/ted`, authController.authMiddleware, checkingAccountController.verifyIfExists, statementController.ted);
 
 
 
